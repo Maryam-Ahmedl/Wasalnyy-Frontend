@@ -2,15 +2,18 @@
   <h2>Login</h2>
   @if (this.error!=='') {
 
-    <p class="alert alert-danger">{{ error }}</p>
+  <p class="alert alert-danger">{{ error }}</p>
   }
   <form (ngSubmit)="login()" #loginForm="ngForm">
-    <input [(ngModel)]="loginData.email" name="email" type="email" placeholder="Email"  autocomplete="username"  required />
-    <input [(ngModel)]="loginData.password" name="password" type="password" placeholder="Password" autocomplete="current-password" required class="​ng-touched ng-dirty ng-valid" />
+    <input [(ngModel)]="loginData.email" name="email" type="email" placeholder="Email" autocomplete="username"
+      required />
+    <input [(ngModel)]="loginData.password" name="password" type="password" placeholder="Password"
+      autocomplete="current-password" required class="​ng-touched ng-dirty ng-valid" />
     <button type="submit" [disabled]="!loginForm.valid" class="m-2">Login</button>
   </form>
-  <button (click)="rerouteToRegister()" >go to registration page</button>
+  <button (click)="goToForgotPassword()" class="btn btn-link">Forgot Password?</button>
+  <button (click)="rerouteToRegister()">go to registration page</button>
   @if (this.role=="Driver") {
-    <button (click)="rerouteToFaceLogin()">face login</button>
+  <button (click)="rerouteToFaceLogin()">face login</button>
   }
 </div>

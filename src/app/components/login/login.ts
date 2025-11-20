@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
     password: ''
   };
 
-  constructor(private authService: AuthService,private route:   
+  constructor(private authService: AuthService,private route:
     ActivatedRoute,private router: Router
   ) {}
   ngOnInit() {
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.loginData,this.role).subscribe({
       next: (res) => {
-        this.error='';   
+        this.error='';
         this.authService.saveToken(res.token);
         this.authService.saveRole(this.role);
         let rolePath = this.role.toLowerCase() + '-dashboard';
@@ -46,7 +46,9 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-  
+  goToForgotPassword() {
+  this.router.navigate(['/forgot-password']);
+}
   rerouteToRegister(){
     console.log(this.role)
     if(this.role=="Driver"){

@@ -11,6 +11,8 @@ import { PaymentFailed } from './components/payment-failed/payment-failed';
 import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
 import { AuthGuard } from './auth/auth-guard';
 import { DashboardRedirectComponent } from './components/dashboard-redirect/dashboard-redirect';
+import { ResetPassword } from './components/reset-password/reset-password';
+import { ForgotPassword } from './components/forgot-password/forgot-password';
 
 export const routes: Routes = [
   // default route redirects based on login status
@@ -26,6 +28,8 @@ export const routes: Routes = [
   { path: 'rider-dashboard', component: RiderDashboard, canActivate: [AuthGuard], data: { role: 'Rider' } },
   { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
 
+  { path: 'reset-password', component: ResetPassword },
+  { path: 'forgot-password', component: ForgotPassword },
   { path: 'payment-successful', component: PaymentSuccessful },
   { path: 'payment-failed', component: PaymentFailed },
 
