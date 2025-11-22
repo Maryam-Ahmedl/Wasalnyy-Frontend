@@ -1,16 +1,15 @@
-   <div class=" w-50 mx-auto my-2 d-flex flex-column align-items-center justify-content-center justify-content-around border border-1 rounded-2 p-2">
-       
-     <div class="w-100 my-2"> <input placeholder="current location latitude" class="form-control w-100" type="text" name="" id="" [(ngModel)]="currentLatitude"></div> 
-     <div class="w-100 my-2"><input placeholder="current location longitude" class="form-control w-100" type="text" name="" id="" [(ngModel)]="currentLongitude"></div>
-     <div class="w-100 my-2"><input placeholder="destination latitude" class="form-control w-100" type="text" name="" id="" [(ngModel)]="destinationLatitude"></div>
-     <div class="w-100 my-2"><input placeholder="destination longitude" class="form-control w-100" type="text" name="" id="" [(ngModel)]="destinationLongitude"></div>
-     <div class="w-100 my-2">
-    <select id="myDropdown" name="selectedOption" class="form-control w-100"> 
-    <option [defaultSelected]>select a payment method</option>
-     <option value="0">cash</option>
-     <option value="1">e-wallet</option>
-     </select>
+<div class="w-50 mx-auto my-2 d-flex flex-column align-items-center justify-content-center justify-content-around border border-1 rounded-2 p-2">
 
-     </div>     
-     <button (click)="requestTrip()" class="btn btn-outline-dark w-100"  >request trip</button>
-   </div>
+  <input placeholder="Current latitude" class="form-control w-100 my-2" type="text" [(ngModel)]="currentLatitude">
+  <input placeholder="Current longitude" class="form-control w-100 my-2" type="text" [(ngModel)]="currentLongitude">
+  <input placeholder="Destination latitude" class="form-control w-100 my-2" type="text" [(ngModel)]="destinationLatitude">
+  <input placeholder="Destination longitude" class="form-control w-100 my-2" type="text" [(ngModel)]="destinationLongitude">
+
+  <select class="form-control w-100 my-2" [(ngModel)]="paymentMethod">
+    <option [ngValue]="null" disabled selected>Select a payment method</option>
+    <option [ngValue]="0">Cash</option>
+    <option [ngValue]="1">E-Wallet</option>
+  </select>
+
+  <button (click)="requestTrip()" class="btn btn-outline-dark w-100">Request Trip</button>
+</div>

@@ -33,10 +33,10 @@ export const routes: Routes = [
 
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgot-password', component: ForgotPassword },
-   {path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
-  {path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
-  {path:'wallet',component:Wallet, canActivate: [AuthGuard]},
-  
+  { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
+  { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
+  { path:'wallet',component:Wallet, canActivate: [AuthGuard]},
+
   { path: 'payment-failed', component: PaymentFailed },
   { path: 'payment-successful', component: PaymentSuccessful },
 

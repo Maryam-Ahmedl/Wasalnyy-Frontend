@@ -9,25 +9,26 @@ import { TripRequestDto } from '../models/trip-request.dto';
 })
 export class TripService {
   apiUrl = `${environment.apiUrl}`;
-  constructor(private http: HttpClient,private authService: AuthService) {}
+
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
   requestTrip(dto: TripRequestDto) {
-  const token = this.authService.getToken();
+    const token = this.authService.getToken();
+
     const formData = new FormData();
-  formData.append('PaymentMethod', dto.PaymentMethod.toString());
-  formData.append('PickupCoordinates.Lat', dto.PickupCoordinates.Lat.toString());
-  formData.append('PickupCoordinates.Lng', dto.PickupCoordinates.Lng.toString());
-  formData.append('DistinationCoordinates.Lat', dto.DistinationCoordinates.Lat.toString());
-  formData.append('DistinationCoordinates.Lng', dto.DistinationCoordinates.Lng.toString());
+    formData.append('PaymentMethod', dto.PaymentMethod.toString());
+    formData.append('PickupCoordinates.Lat', dto.PickupCoordinates.Lat.toString());
+    formData.append('PickupCoordinates.Lng', dto.PickupCoordinates.Lng.toString());
+    formData.append('DistinationCoordinates.Lat', dto.DistinationCoordinates.Lat.toString());
+    formData.append('DistinationCoordinates.Lng', dto.DistinationCoordinates.Lng.toString());
 
-  const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
-  
-  const url = `${this.apiUrl}/Trip/Request`;
-  console.log('Request URL:', url);
-  console.log('Request DTO:', dto);
-  
-  return this.http.post(url, formData, { headers });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const url = `${this.apiUrl}/Trip/Request`;
+    console.log('Request URL:', url, 'DTO:', dto);
+
+    return this.http.post(url, formData, { headers });
   }
-
 }

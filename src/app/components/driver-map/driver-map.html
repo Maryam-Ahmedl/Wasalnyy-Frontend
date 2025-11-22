@@ -1,13 +1,19 @@
-     <div class="w-50 align-items-center mx-auto"><button (click)="setAvailable() " class="w-100 mx-auto my-2 btn btn-outline-dark align-center" >set as available to accept trips</button></div> <div class="container w-50 mx-auto my-2 p-2 d-flex flex-column align-items-center justify-content-center">
-      <input class="w-100 form-control" placeholder="current location latitude" type="text" name="" id="" [(ngModel)]="currentLatitude">
-         <input class="w-100 form-control" placeholder="current location longitude" type="text" name="" id="" [(ngModel)]="currentLongitude">
-         <button (click)="updateLocation()"  class="w-100 btn btn-outline-dark">update location</button>
+<div class="w-50 align-items-center mx-auto">
+  <button (click)="setAvailable()" class="w-100 mx-auto my-2 btn btn-outline-dark align-center">
+    set as available to accept trips
+  </button>
+</div>
+<div class="container w-50 mx-auto my-2 p-2 d-flex flex-column align-items-center justify-content-center">
+  <input class="w-100 form-control" placeholder="current location latitude" type="text" name="" id=""
+    [(ngModel)]="currentLatitude" />
+  <input class="w-100 form-control" placeholder="current location longitude" type="text" name="" id=""
+    [(ngModel)]="currentLongitude" />
+  <button (click)="updateLocation()" class="w-100 btn btn-outline-dark">update location</button>
+</div>
 
-   </div>
-
- <div class="container w-50 mx-auto my-2  p-2 d-flex flex-column align-items-center justify-content-center">
-         <input class="w-100 form-control" type="text" name="" id="" [(ngModel)]="tripId" placeholder="trip id to accept">
-         <button (click)="acceptTrip()"  class="w-100 btn btn-outline-dark">acceptTrip </button>
-  </div>
-
-
+<div class="container w-50 mx-auto my-2 p-2 d-flex flex-column align-items-center justify-content-center">
+  <input class="w-100 form-control" type="text" name="" id="" [(ngModel)]="tripId" placeholder="trip id to accept" />
+  <button (click)="acceptTrip()" class="w-100 btn btn-outline-dark">Accept Trip</button>
+  <button (click)="startTrip()" class="w-100 btn btn-outline-primary my-1">Start Trip</button>
+  <button (click)="endTrip()" class="w-100 btn btn-outline-danger my-1">End Trip</button>
+</div>

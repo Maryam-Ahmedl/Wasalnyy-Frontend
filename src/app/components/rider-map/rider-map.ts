@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { Coordinates } from '../../models/trip-request.dto';
+import { Component, OnInit } from '@angular/core';
+import { Coordinates, TripRequestDto } from '../../models/trip-request.dto';
 import { TripService } from '../../services/trip.service';
 import { FormsModule } from '@angular/forms';
+import { SignalrServiceTs } from '../../services/signalr.service.ts';
+import { PaymentMethod } from '../../enums/PaymentMethod';
 
 @Component({
   selector: 'app-rider-map',
@@ -9,52 +11,45 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './rider-map.html',
   styles: ``,
 })
-export class RiderMap {
+export class RiderMap implements OnInit {
+  currentLatitude: string | null = null;
+  currentLongitude: string | null = null;
+  destinationLatitude: string | null = null;
+  destinationLongitude: string | null = null;
+  paymentMethod: PaymentMethod | null = null;
 
-role:string ="";
-currentLatitude: String|null=null;
-currentLongitude: String|null=null;
-destinationLatitude: String|null=null;
-destinationLongitude: String|null=null;
-constructor( private tripService: TripService) {}
-requestTrip() {
-  // Log the raw coordinate values
-  console.log('Raw coordinates:', {
-    currentLat: this.currentLatitude,
-    currentLng: this.currentLongitude,
-    destLat: this.destinationLatitude,
-    destLng: this.destinationLongitude
-  });
+  constructor(private tripService: TripService, private signalR: SignalrServiceTs) {}
 
-  const request = {
-    PaymentMethod: 1,
-    PickupCoordinates: {
-      Lat: +this.currentLatitude!,   // Unary + converts string to number
-      Lng: +this.currentLongitude!
-    },
-    DistinationCoordinates: {
-      Lat: +this.destinationLatitude!,
-      Lng: +this.destinationLongitude!
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.signalR.startConnection();
+    } catch (err) {
+      console.error('Failed to connect to hub:', err);
     }
-  };
+  }
 
-  // Log the complete request object
-  console.log('Complete request object:', request);
-  console.log('Request as JSON:', JSON.stringify(request));
-  
-  // Log individual nested objects
-  console.log('PickupCoordinates:', request.PickupCoordinates);
-  console.log('DistinationCoordinates:', request.DistinationCoordinates);
-
-  this.tripService.requestTrip(request).subscribe({
-    next: (res) => {
-      console.log('SUCCESS:', res);
-    },
-    error: (err) => {
-      console.error('ERROR Status:', err.status);
-      console.error('ERROR Response:', err.error);
-      console.error('Full error object:', JSON.stringify(err.error, null, 2));
+  requestTrip(): void {
+    if (!this.signalR.connectionStarted) {
+      console.warn('Hub is not connected yet. Please wait...');
+      return;
     }
-  });
-}
+
+    if (!this.currentLatitude || !this.currentLongitude || !this.destinationLatitude || !this.destinationLongitude || this.paymentMethod === null) {
+      console.warn('Please fill all fields.');
+      return;
+    }
+
+    const request: TripRequestDto = {
+      PaymentMethod: this.paymentMethod,
+      PickupCoordinates: { Lat: +this.currentLatitude, Lng: +this.currentLongitude },
+      DistinationCoordinates: { Lat: +this.destinationLatitude, Lng: +this.destinationLongitude },
+    };
+
+    console.log('Sending trip request:', request);
+
+    this.tripService.requestTrip(request).subscribe({
+      next: (res) => console.log('Trip requested successfully:', res),
+      error: (err) => console.error('Error requesting trip:', err),
+    });
+  }
 }
