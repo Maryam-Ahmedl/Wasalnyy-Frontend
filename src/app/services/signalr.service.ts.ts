@@ -33,25 +33,6 @@ export class SignalrServiceTs {
         .withAutomaticReconnect()
         .build();
 
-      // Driver events
-      if (this.role === 'Driver') {
-        this.hubConnection.on('availableTripsInZone', (trip) => {
-          console.log('Received pending trip:', trip);
-          this.pendingTripSubject.next(trip);
-        });
-        this.hubConnection.on('pendingTrip', (trip) => {
-          console.log('Received pending trip:', trip);
-          this.pendingTripSubject.next(trip);
-        });
-      }
-
-      // Rider events
-      else if (this.role === 'Rider') {
-        this.hubConnection.on('tripAccepeted', (driver) => {
-          console.log('Received trip status update:', driver);
-        });
-      }
-
       this.hubConnection
         .start()
         .then(() => {
@@ -65,13 +46,30 @@ export class SignalrServiceTs {
         });
     });
   }
+  getHubConnection(): signalR.HubConnection {
+  return this.hubConnection;
+  }
 
-  endConnection(): void {
-    if (this.hubConnection) {
+  endConnection(): Promise<void> {
+     return new Promise((resolve, reject) => {
+          if (this.hubConnection) {
       this.hubConnection
         .stop()
-        .then(() => console.log('SignalR Disconnected'))
-        .catch((err) => console.log('Error while disconnecting SignalR:', err));
+        .then(() =>{ 
+          console.log('SignalR Disconnected');
+          this.connectionStarted = false;
+          resolve();
+        }
+      
+      )
+        .catch((err) => {
+          console.log('Error while disconnecting SignalR:', err); 
+          reject(err);
+        });
     }
+
+
+     })
+
   }
 }

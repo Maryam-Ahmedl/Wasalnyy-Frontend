@@ -16,7 +16,17 @@ export class RiderDashboard implements OnInit {
   constructor(private authService: AuthService, private router: Router, private signalrService: SignalrServiceTs) {}
 ngOnInit(): void {
 
-  this.signalrService.startConnection();
+  this.signalrService.startConnection().then(() => {
+    const hubConnection = this.signalrService.getHubConnection();
+    hubConnection.on("pendingTrip", (trip) => {
+    console.log("already active in a trip:", trip);
+    this.signalrService.endConnection().then(() => {
+      this.requestRide();
+    });
+    
+
+  });
+  });
 }
 
 goToWallet(){

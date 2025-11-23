@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Coordinates, TripRequestDto } from '../../models/trip-request.dto';
 import { TripService } from '../../services/trip.service';
 import { FormsModule } from '@angular/forms';
@@ -11,25 +11,38 @@ import { PaymentMethod } from '../../enums/PaymentMethod';
   templateUrl: './rider-map.html',
   styles: ``,
 })
-export class RiderMap implements OnInit {
+export class RiderMap implements OnInit,OnDestroy {
   currentLatitude: string | null = null;
   currentLongitude: string | null = null;
   destinationLatitude: string | null = null;
   destinationLongitude: string | null = null;
   paymentMethod: PaymentMethod | null = null;
 
-  constructor(private tripService: TripService, private signalR: SignalrServiceTs) {}
+  constructor(private tripService: TripService, private signalrService: SignalrServiceTs) {}
 
-  async ngOnInit(): Promise<void> {
-    try {
-      await this.signalR.startConnection();
-    } catch (err) {
-      console.error('Failed to connect to hub:', err);
-    }
-  }
+ngOnInit(): void {
+
+  this.signalrService.startConnection().then(() => {
+    const hubConnection = this.signalrService.getHubConnection();
+    hubConnection.on("pendingTrip", (trip) => {
+    console.log("already active in a trip:", trip);
+
+      });
+  hubConnection.on('tripAccepeted', (driver) => {
+          console.log('your trip has been accepted by driver:', driver);
+        });
+  hubConnection.on('tripStarted', (trip) => {
+          console.log('Trip started:', trip);
+  });
+  hubConnection.on('tripEnded', () => {
+          console.log('Trip ended');
+  });      
+
+  });
+}
 
   requestTrip(): void {
-    if (!this.signalR.connectionStarted) {
+    if (!this.signalrService.connectionStarted) {
       console.warn('Hub is not connected yet. Please wait...');
       return;
     }
@@ -52,4 +65,12 @@ export class RiderMap implements OnInit {
       error: (err) => console.error('Error requesting trip:', err),
     });
   }
+
+  ngOnDestroy() {
+  const hub = this.signalrService.getHubConnection();
+  hub.off("pendingTrip");
+  hub.off("tripAccepeted");
+  hub.off("tripStarted");
+  hub.off("tripEnded");
+}
 }

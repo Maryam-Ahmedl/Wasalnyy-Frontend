@@ -55,4 +55,10 @@ export class DriverHubService {
       { headers: this.headers }
     );
   }
+  SetAsUnavailable() {
+       return this.http.post(
+      `${this.baseUrl}/SetAsUnAvailable`,null,
+      { headers: this.headers }
+    );
+  }
 }
