@@ -39,11 +39,12 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
   routeLayer?: L.Polyline | null;
 
    carIcon = L.icon({
-  iconUrl: 'car.png',   // path to your car image
-  iconSize: [40, 40],                 // size of the icon [width, height]
-  iconAnchor: [20, 20],               // point of the icon which will correspond to marker's location (centered)
-  popupAnchor: [0, -20]               // point from which the popup should open relative to the iconAnchor
+  iconUrl: 'car.png',
+  iconSize: [40, 40], 
+  iconAnchor: [20, 20],               
+  popupAnchor: [0, -20]               
 });
+
   
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -114,10 +115,7 @@ private renderFirstPoint() {
   const lon = Number(this.firstPoint.Lng);
 
   if (isNaN(lat) || isNaN(lon)) return;
-      console.log(this.firstPoint.Lat);
-    console.log(this.firstPoint.Lng)
-    console.log(lat);
-    console.log(lon);
+
 
   this.firstPointMarker = L.marker([lat, lon], { icon: this.carIcon }).addTo(this.map);
 }
@@ -134,10 +132,7 @@ private renderFirstPoint() {
   
     
      if (isNaN(lat) || isNaN(lon)) return;
-    console.log(this.secondPoint.Lat);
-    console.log(this.secondPoint.Lng)
-    console.log(lat);
-    console.log(lon);
+
 
     this.secondPointMarker = L.marker([lat, lon]).addTo(this.map);
   }

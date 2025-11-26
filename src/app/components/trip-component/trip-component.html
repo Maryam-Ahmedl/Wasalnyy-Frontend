@@ -2,11 +2,12 @@
         <div class="w-100 mx-auto m-2 align-items-center shadow round-2">
             @if(this.role==="Driver"){
             @if(activeTrip.tripStatus===2){
+              <p>meet the rider at the pickup location</p>
               
-              <h1>accepted trip</h1>
             }
             @else if(activeTrip.tripStatus===3){
-              <h1>active trip:</h1>
+              <p>trip started</p>
+              <p>you are on your way</p>
             }       
             } 
             @else {

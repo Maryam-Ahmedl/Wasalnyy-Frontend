@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject} from 'rxjs';
 import { TripStatus } from '../enums/tripStatus';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -23,26 +23,30 @@ updateTrip(tripData: any) {
     if(this.listofAvailableTrips.value){
       this.clearListOfAvailableTrips();
     }
-    console.log("trip data updated",this.trip.value);
   }
-  updateTripCoords(Coords:any){
-    let tripData=this.trip.value;
-    tripData.CurrentCoordinates=Coords;
-    this.trip.next(tripData)
-    console.log("trip coords updated",this.trip.value);
-  }
+
+  updateTripCoords(Coords: any) {
+  const currentTrip = this.trip.value;
+  const newTrip = {
+    ...currentTrip,
+    CurrentCoordinates: {...Coords}
+  };
+  console.log("trip coords updated",newTrip);
+  this.trip.next(newTrip); 
+}
   updateDriver(driverData: any) {
     this.driver.next(driverData);
     const coordinates=driverData.coordinates;
-    this.updateTripCoords(coordinates);
-    console.log("driver accepted trip",this.driver.value);
+    const currentTrip=this.trip.value;
+    const newTrip={...currentTrip,CurrentCoordinates:{...coordinates},tripStatus:TripStatus.Accepted}
+    this.updateTrip(newTrip);    
   }
   updateDriverCoords(Coords:any){
     let driverData=this.driver.value;
-    driverData.Coordinates=Coords;
-    this.driver.next(driverData);
+    const newDriver={...driverData,Coordinates:{...Coords}};
+    this.driver.next(newDriver);
     this.updateTripCoords(Coords);
-    console.log("driver location updated",this.driver.value);
+    
   }
   clearTrip() {
     this.trip.next(null);

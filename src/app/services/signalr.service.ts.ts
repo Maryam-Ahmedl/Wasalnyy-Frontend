@@ -34,6 +34,11 @@ export class SignalrServiceTs {
           this.hubConnection.on('tripRequested',trip=>{
             console.log("tripRequested",trip);
             this.tripInfoService.updateTrip(trip)})
+           this.hubConnection.on('tripConfirmed',trip=>{
+            console.log("tripConfirmed",trip);
+            this.tripInfoService.updateTrip(trip)})
+           
+            
           this.hubConnection.on('tripStarted', trip => {
             this.tripInfoService.updateTrip(trip)
           });
@@ -46,7 +51,10 @@ export class SignalrServiceTs {
             this.tripInfoService.clearListOfAvailableTrips();
           });      
           this. hubConnection.on('tripAccepeted', driver=> {
-            this.tripInfoService.updateDriver(driver)});
+            console.log("trip accepted");
+            this.tripInfoService.updateDriver(driver)}
+          
+          );
           if(this.userRole==="Rider"){
           this. hubConnection.on('yourDriverLocationUpdated', coords=>this.tripInfoService.updateDriverCoords(coords));
           }

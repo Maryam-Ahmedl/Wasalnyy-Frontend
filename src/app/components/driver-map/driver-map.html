@@ -10,16 +10,18 @@
 
    }
   @else {
-    @if(intrip) {<h1>Active trip</h1>}
+    @if(intrip) {
+      
+      <h1>Active trip</h1>
+    }
     <h1 class="title">select location on map to update your live location</h1>
     <button (click)="updateLocation()" class="w-100 btn btn-outline-dark">update location</button>
   }  
 @if(available &&!intrip){
-  @if(availableTrips.length>0){
-   <h1 class="title">available trips near you:</h1> 
-  }
-   
+
    @for( trip of availableTrips; track $index){
+       <h1 class="title">trip request near you:</h1> 
+
    <app-trip-component [activeTrip]="trip" (acceptTrip)="(acceptTrip($event))"></app-trip-component>
 
   }

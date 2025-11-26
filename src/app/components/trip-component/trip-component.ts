@@ -23,15 +23,12 @@ export class TripComponent implements OnInit {
     this.role=this.authService.getRole()
   }
   confirmRequest(){
-    this.activeTrip.tripStatus=TripStatus.Confirmed;
-    this.confirmTripRequest.emit(this.activeTrip.id);
+        this.confirmTripRequest.emit(this.activeTrip.id);
   }
   accepttrip(){
-    this.activeTrip.tripStatus=TripStatus.Accepted;
-    this.acceptTrip.emit(this.activeTrip.id);
+        this.acceptTrip.emit(this.activeTrip.id);
   }
   starttrip(){
-    this.activeTrip.tripStatus=TripStatus.Started;
     this.startTrip.emit(this.activeTrip.id);
   }
   endtrip(){
