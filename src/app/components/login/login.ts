@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../auth/auth-service';
 import { LoginDto } from '../../models/login';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 
 
@@ -24,8 +24,7 @@ export class LoginComponent implements OnInit {
   };
 
   constructor(private authService: AuthService,private route:
-    ActivatedRoute,private router: Router
-  ) {}
+    ActivatedRoute,private router: Router) {}
   ngOnInit() {
     this.role = this.route.snapshot.paramMap.get('role')!;
   }
@@ -36,10 +35,9 @@ export class LoginComponent implements OnInit {
         this.error='';
         this.authService.saveToken(res.token);
         this.authService.saveRole(this.role);
-        let rolePath = this.role.toLowerCase() + '-dashboard';
-        this.router.navigate([`/${rolePath}`]);
 
-      },
+        this.router.navigate([``]);
+        },
       error: (err) => {
         this.error = err.error;
         console.error(err.error);

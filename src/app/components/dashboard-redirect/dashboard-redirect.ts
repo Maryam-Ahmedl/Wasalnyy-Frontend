@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth/auth-service';
+import { SignalrServiceTs } from '../../services/signalr.service.ts';
+import { TripInfoService } from '../../services/trip-info.service';
 
 @Component({
   selector: 'app-dashboard-redirect',
@@ -7,31 +10,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard-redirect.css']
 })
 export class DashboardRedirectComponent implements OnInit {
-  constructor(private router: Router) {}
+
+  constructor(private router: Router,private authService: AuthService
+    ,private signalrService: SignalrServiceTs,private tripInfoService: TripInfoService
+  ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
+    const token = this.authService.getToken();
+    const role = this.authService.getRole()?.toLowerCase();
+   if(!token||!role) this.router.navigate(['/choose-user-type']);
+   else {
+     this.signalrService.startConnection().then(() => {
+      setTimeout(()=>{
+       if(this.tripInfoService.isInTripValue) {
+          this.router.navigate([`/${role}-map`]);
+        }else{
+           this.router.navigate([`/${role}-dashboard`]);
+        } 
 
-    setTimeout(() => { // small delay to show spinner
-      if (!token) {
-        this.router.navigate(['/choose-user-type']);
-        return;
-      }
+      },200);
 
-      switch(role) {
-        case 'Driver':
-          this.router.navigate(['/driver-dashboard']);
-          break;
-        case 'Rider':
-          this.router.navigate(['/rider-dashboard']);
-          break;
-        case 'Admin':
-          this.router.navigate(['/admin-dashboard']);
-          break;
-        default:
-          this.router.navigate(['/choose-user-type']);
-      }
-    }, 500); // half-second delay for smooth spinner display
+     });
+
+   }
   }
 }

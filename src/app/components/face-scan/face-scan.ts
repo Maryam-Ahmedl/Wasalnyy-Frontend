@@ -104,10 +104,10 @@ captureAndUpload() {
               this.authService.saveToken(res.token);
               this.authService.saveRole('Driver');
 
-              setTimeout(() => this.router.navigate(['/driver-dashboard']), 1000);
+              setTimeout(() => this.router.navigate(['']), 1000);
             } else {
               this.loginResult = 'No matching face found';
-              this.preview = null; // Reset for retry
+              this.preview = null; 
               this.buttonText = null;
             }
           });

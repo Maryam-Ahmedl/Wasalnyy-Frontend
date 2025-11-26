@@ -1,0 +1,18 @@
+.container-wrapper {
+  display: flex;
+  height: 100vh;  /* full viewport height */
+  width: 100vw;
+  overflow: hidden;
+}
+
+app-rider-sidebar {
+  width: 350px;  /* fixed sidebar width */
+  background: white;
+  z-index: 10;
+}
+
+app-map {
+  flex-grow: 1;   /* map takes the remaining space */
+  height: 100%;
+  z-index: 0;
+}

@@ -1,15 +1,40 @@
-<div class="w-50 mx-auto my-2 d-flex flex-column align-items-center justify-content-center justify-content-around border border-1 rounded-2 p-2">
+  <div class="container-wrapper d-flex vh-100 vw-100">
+    @if(InTrip){
+      <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" class="w-100"></app-trip-component>
+    }@else{
+      <app-rider-sidebar
+   (originSelected)="handleOriginUpdate($event)"
+   (destinationSelected)="handleDestinationUpdate($event)"
+   (paymentMethodSelected)="handlePaymenMethodUpdate($event)"
+   (tripRequested)="handleTripRequest($event)"
+   ></app-rider-sidebar>
 
-  <input placeholder="Current latitude" class="form-control w-100 my-2" type="text" [(ngModel)]="currentLatitude">
-  <input placeholder="Current longitude" class="form-control w-100 my-2" type="text" [(ngModel)]="currentLongitude">
-  <input placeholder="Destination latitude" class="form-control w-100 my-2" type="text" [(ngModel)]="destinationLatitude">
-  <input placeholder="Destination longitude" class="form-control w-100 my-2" type="text" [(ngModel)]="destinationLongitude">
 
-  <select class="form-control w-100 my-2" [(ngModel)]="paymentMethod">
-    <option [ngValue]="null" disabled selected>Select a payment method</option>
-    <option [ngValue]="0">Cash</option>
-    <option [ngValue]="1">E-Wallet</option>
-  </select>
+    }
+    @if(!activeTrip ||activeTrip.tripStatus>3){
+       <app-map></app-map>
+    }
+    @else if(activeTrip.tripStatus===0||activeTrip.tripStatus===1){
 
-  <button (click)="requestTrip()" class="btn btn-outline-dark w-100">Request Trip</button>
-</div>
+  <app-map class="col-9"
+   [firstPoint]="currentCoords"
+   [secondPoint]="destinationCoords"
+   ></app-map>
+    }
+    @else if (activeTrip.tripStatus==2){
+    <app-map class="col-9"
+   [firstPoint]="activeTrip.currentCoordinates"
+   [secondPoint]="currentCoords"
+   ></app-map>
+    }
+    @else if (activeTrip.tripStatus==3) {
+   <app-map class="col-9"
+   [firstPoint]="activeTrip.currentCoordinates"
+   [secondPoint]="destinationCoords"
+   ></app-map>
+
+    }
+
+  </div>
+  
+ 

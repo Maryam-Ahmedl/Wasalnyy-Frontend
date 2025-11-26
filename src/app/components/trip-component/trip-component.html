@@ -1,0 +1,48 @@
+  <div class="col-3 text-center w-100">
+        <div class="w-100 mx-auto m-2 align-items-center shadow round-2">
+            @if(this.role==="Driver"){
+            @if(activeTrip.tripStatus===2){
+              
+              <h1>accepted trip</h1>
+            }
+            @else if(activeTrip.tripStatus===3){
+              <h1>active trip:</h1>
+            }       
+            } 
+            
+          <h1>Your trip</h1>
+          <p>trip start location</p>
+          <p class="fw-bold">{{activeTrip.pickupCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
+          <p>trip end location</p>
+          <p class="fw-bold">{{activeTrip.distinationCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
+          <p>trip distance</p>
+          <p class="fw-bold">{{activeTrip.distanceKm}} Km</p>
+          <p>estimated trip duration</p>
+          <p class="fw-bold">{{activeTrip.durationMinutes}} minutes</p>
+          <p>price</p>
+          <p class="fw-bold">{{activeTrip.price|currency:'USD'}}</p>
+          <p>trip status</p>
+          <p class="fw-bold">{{activeTrip.tripStatus}}</p>
+          @if(this.role==="Rider"){
+            
+            @if(activeTrip.tripStatus===0){
+
+                <button (click)="confirmRequest()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">confirm trip</button>
+            }
+            <button class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">cancel</button>
+          }
+         @else if(this.role==="Driver"){
+            @if (activeTrip.tripStatus===1){
+               <button (click)="accepttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">accept trip</button>
+            }
+             @else if(activeTrip.tripStatus===2){
+          <button (click)="starttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">start trip</button>
+        }
+        @else if(activeTrip.tripStatus===3){
+          <button (click)="endtrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">end trip</button>
+        }
+          }
+          
+          
+        </div>
+      </div>

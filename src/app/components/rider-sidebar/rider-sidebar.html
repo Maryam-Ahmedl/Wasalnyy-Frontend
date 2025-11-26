@@ -1,0 +1,28 @@
+<div class="sidebar">
+  <button (click)="redirectToHomepge()" class="btn btn-outline-dark w-100 my-3"> back to homepage</button>
+<h3 class="title">Request Ride</h3>
+
+<label class="label">pick up location</label>
+  <app-search-bar
+  placeholder="pick up..."
+  (locationSelected)="onOriginSelected($event)">
+</app-search-bar>
+
+<label class="label mt-3">Destination</label>
+<app-search-bar
+  placeholder="destination..."
+  (locationSelected)="onDestinationSelected($event)">
+</app-search-bar>
+
+
+
+
+  <select class="form-control w-100 mt-3" [(ngModel)]="paymentMethod" (change)="onChangePaymentMethod($event)">
+    <option [ngValue]="null" disabled selected>Select a payment method</option>
+    <option [ngValue]="0">Cash</option>
+    <option [ngValue]="1">E-Wallet</option>
+  </select>
+<button class="btn btn-outline-dark w-100 mt-3" (click)="requestTrip()">Confirm Ride Request </button>
+</div>
+
+<!-- // [disabled]="!canRequestTrip" -->

@@ -2,64 +2,93 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DriverHubService } from '../../services/driverHub.service';
 import { FormsModule } from '@angular/forms';
 import { SignalrServiceTs } from '../../services/signalr.service.ts';
+import { TripStatus } from '../../enums/tripStatus';
+import { TripInfoService } from '../../services/trip-info.service';
+import { MapComponent } from '../map-component/map-component';
+import { Coordinates } from '../../models/trip-request.dto';
+import { Router } from '@angular/router';
+import { TripComponent } from '../trip-component/trip-component';
 
 @Component({
   selector: 'app-driver-map',
-  imports: [FormsModule],
+  imports: [FormsModule,MapComponent,TripComponent],
   templateUrl: './driver-map.html',
-  styles: ``,
+  styleUrl: './driver-map.css',
 })
-export class DriverMap implements OnInit,OnDestroy{
+export class DriverMap implements OnInit, OnDestroy{
 
-  currentLatitude: number | null = null;
-  currentLongitude: number | null = null;
+  currentCoords:Coordinates|null=null;
+  destinationCoords:Coordinates|null=null;
   tripId: string = "";
-  constructor(private driverHubService: DriverHubService, private signalrService: SignalrServiceTs) { }
-  ngOnInit(): void {
-    this.signalrService.startConnection().then(() => {
-      const hubConnection = this.signalrService.getHubConnection(); 
-      hubConnection.on("pendingTrip", (trip) => {
-        console.log("already active in a trip:", trip);
-      });
-      
-    })
-  }
+  available:boolean=false;
+  intrip:boolean=false;
+  tripStatus:TripStatus|null=null;
+  activeTrip:any=null;
+  availableTrips:any[]=[];
+  constructor(private driverHubService: DriverHubService, private signalrService: SignalrServiceTs
+    ,private tripInfoService:TripInfoService,private router:Router) { }
+ngOnInit(): void {
+  this.tripInfoService.Intrip$.subscribe(intrip=>{
+    this.intrip=intrip;
+    this.available=intrip;
+ })
+  this.tripInfoService.trip$.subscribe(trip=>{
+    this.activeTrip=trip;
+    this.tripStatus=this.activeTrip.tripStatus;
+    this.currentCoords=this.activeTrip.pickupCoordinates;
+    this.destinationCoords=this.activeTrip.distinationCoordinates;
+    console.log(this.tripStatus);
+  })
+ this.tripInfoService.listofAvailableTrips$.subscribe(listOfAvailTrips=>{
+  this.availableTrips=listOfAvailTrips;
+ })
+ 
+}
+  setLocation(coordinates:any){
+   this.currentCoords=coordinates;
+       }
 
   setAvailable() {
-    this.driverHubService.SetAsAvailable({ Lat: this.currentLatitude!, Lng: this.currentLongitude! }).subscribe(res => {
-      console.log('Driver set as available', res);
+    this.driverHubService.SetAsAvailable(this.currentCoords!).subscribe(res => {
+      console.log('Driver set as available');
+      this.available=true;
+      this.intrip=false;
+
     });
 
   }
 
   updateLocation() {
-    this.driverHubService.UpdateLocation({ Lat: this.currentLatitude!, Lng: this.currentLongitude! }).subscribe(res => {
-      console.log('Driver location updated', res);
+    this.driverHubService.UpdateLocation(this.currentCoords!).subscribe(res => {
+      console.log('Driver location updated');
+   
+
     });
   }
 
-
-  acceptTrip() {
-    this.driverHubService.AcceptTrip(this.tripId).subscribe(res => {
-      console.log('Trip accepted successfully', res);
+  acceptTrip(id:string) {
+    this.driverHubService.AcceptTrip(id).subscribe(res => {
+      console.log('Trip accepted successfully',res);
     }, err => {
       console.error('Error accepting trip', err);
     });
 
   }
-  // === Start a trip ===
-  startTrip() {
-    if (!this.tripId) return;
-    this.driverHubService.StartTrip(this.tripId)
-      .subscribe(res => console.log('Trip started successfully', res),
+
+  startTrip(id:string) {
+    this.driverHubService.StartTrip(id)
+      .subscribe(res => {
+        console.log('Trip started successfully', res);
+      },
         err => console.error('Error starting trip', err));
   }
 
   // === End a trip ===
-  endTrip() {
-    if (!this.tripId) return;
-    this.driverHubService.EndTrip(this.tripId)
-      .subscribe(res => console.log('Trip ended successfully', res),
+  endTrip(id:string) {
+    this.driverHubService.EndTrip(id)
+      .subscribe(res =>{
+         console.log('Trip ended successfully', res);
+        },
         err => console.error('Error ending trip', err));
   }
   SetAsUnavailable(){
@@ -67,8 +96,12 @@ export class DriverMap implements OnInit,OnDestroy{
       console.log('Driver set as unavailable', res);
     });
 } 
+redirectToHomepge(){
+  this.router.navigate(['/driver-dashboard']);
+}
 ngOnDestroy(): void {
   this.SetAsUnavailable();
+  this.available=false;
 }
 }
 

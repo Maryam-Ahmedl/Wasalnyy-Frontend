@@ -1,0 +1,39 @@
+.container-wrapper {
+  display: flex;
+  height: 100vh;  /* full viewport height */
+  width: 100vw;
+  overflow: hidden;
+}
+
+app-driver-sidebar {
+  width: 350px;  /* fixed sidebar width */
+  background: white;
+  z-index: 10;
+}
+
+app-map {
+  flex-grow: 1;   /* map takes the remaining space */
+  height: 100%;
+  z-index: 0;
+}
+.sidebar {
+  width: 350px;
+  background: white;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  box-shadow: 2px 0px 5px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.label {
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+}

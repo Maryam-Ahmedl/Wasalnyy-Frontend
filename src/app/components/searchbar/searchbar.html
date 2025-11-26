@@ -1,0 +1,14 @@
+<input
+  type="text"
+  [placeholder]="placeholder"
+  (input)="onInput($event)"
+  class="input"
+/>
+
+@if (results.length > 0) {
+  <ul class="suggestions">
+    @for ( r of results; track r.place_id) {
+      <li (click)="select(r)">{{ r.display_name }}</li>
+    }
+  </ul>
+}

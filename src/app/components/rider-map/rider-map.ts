@@ -1,76 +1,76 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Coordinates, TripRequestDto } from '../../models/trip-request.dto';
-import { TripService } from '../../services/trip.service';
+import { Component,  OnInit } from '@angular/core';
+import { Coordinates } from '../../models/trip-request.dto';
+import { TripRequestService } from '../../services/trip-request.service';
 import { FormsModule } from '@angular/forms';
-import { SignalrServiceTs } from '../../services/signalr.service.ts';
 import { PaymentMethod } from '../../enums/PaymentMethod';
+import { RiderSideBar } from '../rider-sidebar/rider-sidebar';
+import { MapComponent } from '../map-component/map-component';
+import { TripInfoService } from '../../services/trip-info.service';
+import { LocationResult } from '../../models/location-result';
+import { TripComponent } from '../trip-component/trip-component';
 
 @Component({
   selector: 'app-rider-map',
-  imports: [FormsModule],
+  imports: [FormsModule, RiderSideBar, MapComponent,TripComponent],
   templateUrl: './rider-map.html',
-  styles: ``,
+  styleUrls: ['./rider-map.css'],
 })
-export class RiderMap implements OnInit,OnDestroy {
-  currentLatitude: string | null = null;
-  currentLongitude: string | null = null;
-  destinationLatitude: string | null = null;
-  destinationLongitude: string | null = null;
+export class RiderMap implements OnInit {
+
+  currentCoords:Coordinates|null=null;
+  destinationCoords:Coordinates|null=null;  
   paymentMethod: PaymentMethod | null = null;
+  InTrip: boolean = false;
+  activeTrip:any|null=null;
+  driver:any|null=null;
 
-  constructor(private tripService: TripService, private signalrService: SignalrServiceTs) {}
-
+  constructor(private tripRequestService: TripRequestService, private tripInfoService: TripInfoService) {}
 ngOnInit(): void {
-
-  this.signalrService.startConnection().then(() => {
-    const hubConnection = this.signalrService.getHubConnection();
-    hubConnection.on("pendingTrip", (trip) => {
-    console.log("already active in a trip:", trip);
-
-      });
-  hubConnection.on('tripAccepeted', (driver) => {
-          console.log('your trip has been accepted by driver:', driver);
-        });
-  hubConnection.on('tripStarted', (trip) => {
-          console.log('Trip started:', trip);
+     this.tripInfoService.Intrip$.subscribe(Intrip => {
+    this.InTrip = Intrip;
   });
-  hubConnection.on('tripEnded', () => {
-          console.log('Trip ended');
-  });      
 
+  this.tripInfoService.trip$.subscribe(trip => {
+     this.activeTrip = trip;
+     this.currentCoords=trip.pickupCoordinates;
+    this.destinationCoords=trip.distinationCoordinates;
   });
+  this.tripInfoService.driver$.subscribe(driver=>{
+    this.driver=driver;
+  })
 }
-
-  requestTrip(): void {
-    if (!this.signalrService.connectionStarted) {
-      console.warn('Hub is not connected yet. Please wait...');
-      return;
-    }
-
-    if (!this.currentLatitude || !this.currentLongitude || !this.destinationLatitude || !this.destinationLongitude || this.paymentMethod === null) {
-      console.warn('Please fill all fields.');
-      return;
-    }
-
-    const request: TripRequestDto = {
-      PaymentMethod: this.paymentMethod,
-      PickupCoordinates: { Lat: +this.currentLatitude, Lng: +this.currentLongitude },
-      DistinationCoordinates: { Lat: +this.destinationLatitude, Lng: +this.destinationLongitude },
-    };
-
-    console.log('Sending trip request:', request);
-
-    this.tripService.requestTrip(request).subscribe({
-      next: (res) => console.log('Trip requested successfully:', res),
-      error: (err) => console.error('Error requesting trip:', err),
-    });
+handleOriginUpdate(firstPointVal:LocationResult){
+  this.currentCoords={Lat:Number(firstPointVal.lat),Lng:Number(firstPointVal.lon)};
+  
+ 
+}
+handleDestinationUpdate(secondPointVal:LocationResult){
+  this.destinationCoords={Lat:Number(secondPointVal.lat),Lng:Number(secondPointVal.lon)};
+  
+}
+handlePaymenMethodUpdate(paymentMethodVal:number){
+  this.paymentMethod=paymentMethodVal;
+}
+handleTripRequest(status:boolean){
+  if(status){
+    this.tripRequestService.requestTrip({PaymentMethod:this.paymentMethod!,
+      PickupCoordinates:this.currentCoords!
+      ,DistinationCoordinates:this.destinationCoords!}).subscribe();
+  }
+}
+confirmTripRequest(tripId:any){
+  this.tripRequestService.confirmTripRequest(tripId).subscribe({
+next: (res) => {
+    console.log('trip confirmed id :',tripId);
+  },
+  error: (err) => {
+        console.error('Error:', err);
   }
 
-  ngOnDestroy() {
-  const hub = this.signalrService.getHubConnection();
-  hub.off("pendingTrip");
-  hub.off("tripAccepeted");
-  hub.off("tripStarted");
-  hub.off("tripEnded");
+  }
+
+  );
 }
+
+
 }
