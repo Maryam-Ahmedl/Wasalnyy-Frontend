@@ -27,15 +27,19 @@ export class SignalrServiceTs {
         .withAutomaticReconnect()
         .build();
 
-                  this.hubConnection.on("pendingTrip", (trip) => {
-                    this.tripInfoService.updateTrip(trip);
-            this.tripInfoService.setInTrip(true);
+          this.hubConnection.on("pendingTrip", (trip) => {
+          this.tripInfoService.updateTrip(trip);
+          this.tripInfoService.setInTrip(true);
           });
           this.hubConnection.on('tripRequested',trip=>{
             this.tripInfoService.updateTrip(trip)})
            this.hubConnection.on('tripConfirmed',trip=>{
             this.tripInfoService.updateTrip(trip)})
-           
+          
+              this.hubConnection.on('tripCanceled',trip=>{
+                console.log(trip);
+              })
+            
             
           this.hubConnection.on('tripStarted', trip => {
             this.tripInfoService.updateTrip(trip)

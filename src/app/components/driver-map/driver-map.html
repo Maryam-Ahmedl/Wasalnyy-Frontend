@@ -1,7 +1,10 @@
-  <div class="container-wrapper">
-     
+  <div class="container-wrapper position-relative">
+      @if(errorState){
 
-<div class="sidebar text-center">
+      <app-message-box class="vw-100 vh-100 z-3"[errorMessage]="errorMessage" (acknowledge)="acknowledgeError()" ></app-message-box>
+    }
+
+<div class="sidebar text-center z-2">
 <button (click)="redirectToHomepge()" class="btn btn-outline-dark w-100 my-3"> back to homepage</button>
    @if (!available) {
     <h1 class="title">select location on map and set yourself available to start receiving ride requests</h1>

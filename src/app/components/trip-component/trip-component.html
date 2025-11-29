@@ -29,8 +29,8 @@
               
             }
                     
-          <p class="fw-bold"> pickup:{{activeTrip.pickupCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
-          <p class="fw-bold"> destinaiton:{{activeTrip.distinationCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
+          <p class="fw-bold"> pickup:{{activeTrip.pickUpName}}</p>
+          <p class="fw-bold"> destinaiton:{{activeTrip.destinationName}}</p>
          @if(activeTrip.tripStatus==='Requested'){
 
            <p class="fw-bold"> distance:{{activeTrip.distanceKm}} Km</p>
@@ -44,7 +44,7 @@
 
                 <button (click)="confirmRequest()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">confirm trip</button>
             }
-            <button class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">cancel</button>
+            <button class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2" (click)="canceltrip()">cancel</button>
           }
          @else if(this.role==="Driver"){
             @if (activeTrip.tripStatus==='Confirmed'){

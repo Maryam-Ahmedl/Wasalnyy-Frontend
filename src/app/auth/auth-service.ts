@@ -21,30 +21,15 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/login`, dto, { params });
   }
 
-  // 🔹 Register Driver
-  registerDriver(dto: RegisterDriverDto) {
-     this.http.post(`${this.baseUrl}/register/driver`, dto).subscribe({
-        next: (res:any) => {
-          console.log(res);
-          // Save token
-          this.saveToken(res.token);
 
-          // Navigate to face scan registration
-        this.router.navigate([`/face-scan/register/${res.driverId}`]);
-        },
-        error: (err) => {
-          console.error(err.error.message);
-          alert('Driver registration failed');
-        }
-      });
+  registerDriver(dto: RegisterDriverDto) {
+     return this.http.post(`${this.baseUrl}/register/driver`, dto);
   }
 
-  // 🔹 Register Rider
   registerRider(dto: RegisterRiderDto): Observable<any> {
     return this.http.post(`${this.baseUrl}/register/rider`, dto);
   }
 
-  // 🔹 Save & get token
   saveToken(token: string) {
     localStorage.setItem('token', token);
   }

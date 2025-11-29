@@ -8,7 +8,6 @@
 app-driver-sidebar {
   width: 350px;  /* fixed sidebar width */
   background: white;
-  z-index: 10;
 }
 
 app-map {

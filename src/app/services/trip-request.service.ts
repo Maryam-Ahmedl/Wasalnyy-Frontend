@@ -16,8 +16,11 @@ export class TripRequestService {
     formData.append('PaymentMethod', dto.PaymentMethod.toString());
     formData.append('PickupCoordinates.Lat', dto.PickupCoordinates.Lat.toString());
     formData.append('PickupCoordinates.Lng', dto.PickupCoordinates.Lng.toString());
+    formData.append('PickUpName',dto.PickupCoordinates.locationName!);
     formData.append('DistinationCoordinates.Lat', dto.DistinationCoordinates.Lat.toString());
     formData.append('DistinationCoordinates.Lng', dto.DistinationCoordinates.Lng.toString());
+    formData.append('DestinationName',dto.DistinationCoordinates.locationName!);
+    console.log(formData)
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -31,10 +34,17 @@ export class TripRequestService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
-    console.log()
     const url = `${this.apiUrl}/Trip/Confirm/${tripId}`;
     return this.http.post(url,null, { headers });
   
 
+  }
+  CancelTrip(tripId:string){
+        const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+        const url = `${this.apiUrl}/Trip/CancelTrip/${tripId}`;
+    return this.http.post(url,null, { headers });
   }
 }

@@ -17,6 +17,7 @@ export class TripComponent implements OnInit {
   @Output() acceptTrip=new EventEmitter<any>();
   @Output() startTrip=new EventEmitter<any>();
   @Output() endTrip=new EventEmitter<any>();
+  @Output() cancelTrip=new EventEmitter<any>();
   
    constructor(private authService:AuthService){}
   ngOnInit(): void {
@@ -33,5 +34,8 @@ export class TripComponent implements OnInit {
   }
   endtrip(){
     this.endTrip.emit(this.activeTrip.id);
+  }
+  canceltrip(){
+    this.cancelTrip.emit(this.activeTrip.id);
   }
 }

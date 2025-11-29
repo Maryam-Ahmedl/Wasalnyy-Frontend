@@ -1,9 +1,13 @@
-  <div class="container-wrapper d-flex vh-100 vw-100">
+  <div class="container-wrapper d-flex vh-100 vw-100 position-relative">
+    @if(errorState){
+
+      <app-message-box class="vw-100 vh-100 z-3"[errorMessage]="errorMessage" (acknowledge)="acknowledgeError()" ></app-message-box>
+    }
     @if(InTrip){
      
-        <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" class="w-100"></app-trip-component>
+        <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" (cancelTrip)="cancelTrip($event)" class="w-100 z-2 "></app-trip-component>
     }@else{
-      <app-rider-sidebar
+      <app-rider-sidebar class="z-2"
    (originSelected)="handleOriginUpdate($event)"
    (destinationSelected)="handleDestinationUpdate($event)"
    (paymentMethodSelected)="handlePaymenMethodUpdate($event)"

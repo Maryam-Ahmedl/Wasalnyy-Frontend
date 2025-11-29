@@ -3,6 +3,12 @@
   <h2>Driver Registration</h2>
 
   <form (ngSubmit)="registerDriver()" #registerForm="ngForm">
+    @if(SuccessMessageDisp){
+      <p class="alert alert-success">{{messageContents}}</p>
+    }
+    @if(ErrorMessageDisp){
+        <p class="alert alert-danger">{{messageContents}}</p>
+    }
     <div class="section">
       <h3>Personal Information</h3>
 

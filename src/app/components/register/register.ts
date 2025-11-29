@@ -7,6 +7,7 @@ import { transmission } from '../../enums/transmission';
 import { EngineType } from '../../enums/EngineType';
 import { RegisterDriverDto } from '../../models/register-driver';
 import { AuthService } from '../../auth/auth-service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,6 +18,9 @@ import { AuthService } from '../../auth/auth-service';
   styleUrls: ['./register.css']
 })
 export class RegisterDriverComponent {
+  SuccessMessageDisp:boolean=false;
+  ErrorMessageDisp:boolean=false;
+  messageContents:string=''
   vehicleTypes = Object.entries(VehicleType)
     .filter(([key, value]) => typeof value === 'number')
     .map(([key, value]) => ({ id: value as number, name: key }));
@@ -36,6 +40,7 @@ export class RegisterDriverComponent {
   driver: RegisterDriverDto = {
     FullName: '',
     Email: '',
+
     PhoneNumber: '',
     Password: '',
     License: '',
@@ -52,10 +57,24 @@ export class RegisterDriverComponent {
     }
   };
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,private router:Router) {}
 
   registerDriver() {
-    console.log(JSON.stringify(this.driver, null, 2));
-    this.authService.registerDriver(this.driver);
+   
+    this.authService.registerDriver(this.driver).subscribe({next:res=>{
+      this.ErrorMessageDisp=false;
+      this.SuccessMessageDisp=true;
+      this.messageContents="Registration successful!"
+     setTimeout(()=>{
+      this.router.navigate(['/login',"Driver"]);
+       },500);
+          },
+    error:err=>{
+      this.SuccessMessageDisp=false;
+      this.messageContents=err.error.message;
+      this.ErrorMessageDisp=true;
+    }
+
+    });
   }
 }

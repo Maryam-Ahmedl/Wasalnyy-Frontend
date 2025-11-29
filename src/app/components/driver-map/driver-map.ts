@@ -1,16 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DriverHubService } from '../../services/driverHub.service';
 import { FormsModule } from '@angular/forms';
-import { TripStatus } from '../../enums/tripStatus';
 import { TripInfoService } from '../../services/trip-info.service';
 import { MapComponent } from '../map-component/map-component';
 import { Coordinates } from '../../models/trip-request.dto';
 import { Router } from '@angular/router';
 import { TripComponent } from '../trip-component/trip-component';
-
+import { MessageBox } from '../message-box/message-box';
 @Component({
   selector: 'app-driver-map',
-  imports: [FormsModule,MapComponent,TripComponent],
+  imports: [FormsModule,MapComponent,TripComponent,MessageBox],
   templateUrl: './driver-map.html',
   styleUrl: './driver-map.css',
 })
@@ -25,6 +24,9 @@ export class DriverMap implements OnInit, OnDestroy{
   tripStatus:string|null=null;
   activeTrip:any=null;
   availableTrips:any[]=[];
+  errorState:boolean=false;
+  errorMessage:string|null=null;
+
   constructor(private driverHubService: DriverHubService,private tripInfoService:TripInfoService,private router:Router) { }
 ngOnInit(): void {
   this.tripInfoService.Intrip$.subscribe(intrip=>{
@@ -55,20 +57,24 @@ ngOnInit(): void {
        }
 
   setAvailable() {
-    this.driverHubService.SetAsAvailable(this.currentCoords!).subscribe(res => {
+    this.driverHubService.SetAsAvailable(this.currentCoords!).subscribe({next:res => {
       this.available=true;
       this.intrip=false;
 
-    });
+    },error:err=>{
+       this.errorState=true;
+       this.errorMessage=err.error;
+    }});
 
   }
 
   updateLocation() {
-    this.driverHubService.UpdateLocation(this.currentCoords!).subscribe(res => {
-      console.log('Driver location updated');
-   
-
-    });
+    this.driverHubService.UpdateLocation(this.currentCoords!).subscribe({next:res => {}
+  ,error:err=>{
+    this.errorState=true;
+     this.errorMessage=err.error.Value.Message;
+  }
+  });
   }
 
   acceptTrip(id:string) {
@@ -86,7 +92,9 @@ ngOnInit(): void {
       }
      
     },error: err => {
-      console.error('Error accepting trip', err);
+      
+      this.errorState=true;
+      this.errorMessage=err.error.Value.Message;
     }});
 
   }
@@ -94,10 +102,14 @@ ngOnInit(): void {
   startTrip(id:string) {
 
     this.driverHubService.StartTrip(id).subscribe({next:res => {
-        console.log('Trip started successfully', res);
-        this.intrip=true;
+               this.intrip=true;
       },
-       error: err => console.error('Error starting trip', err)});
+       error: err => {
+       this.errorState=true;
+      this.errorMessage=err.error.Value.Message;
+
+       }});
+       
   }
 
   endTrip(id:string) {
@@ -107,7 +119,11 @@ ngOnInit(): void {
          this.available=true;
          this.intrip=false;
         },
-        error:err => console.error('Error ending trip', err)});
+        error:err => {
+
+          this.errorState=true;
+       this.errorMessage=err.error.Value.Message;
+        }});
   }
   SetAsUnavailable(){
     this.driverHubService.SetAsUnavailable().subscribe(res => {
@@ -116,6 +132,10 @@ ngOnInit(): void {
 } 
 redirectToHomepge(){
   this.router.navigate(['/driver-dashboard']);
+}
+acknowledgeError(){
+   this.errorState=false;
+  this.errorMessage=null;
 }
 ngOnDestroy(): void {
   this.SetAsUnavailable();
@@ -126,13 +146,4 @@ ngOnDestroy(): void {
 
 }
 
-//import { LocationService } from '../../services/location.service';
-// private locationService: LocationService,
-//==> Get currect location code snippet
-// this.locationService.getCurrentPosition().then(currentLocation => {
-//   this.driverHubService.SetAsAvailable({Lat: currentLocation.lat, Lng: currentLocation.lng}).subscribe(res => {
-//     console.log('Driver set as available', res);
-//   });
-// }).catch(error => {
-//   console.error('Error getting current location', error);
-// });
+
