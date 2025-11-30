@@ -73,4 +73,9 @@ updateTrip(tripData: any) {
   clearListOfAvailableTrips() {
     this.listofAvailableTrips.next( []);
   }
+  removeTripFromListOfAvailableTrips(tripId:string){
+    const currentList=this.listofAvailableTrips.value;
+    const updatedList=currentList.filter(trip=>trip.id!==tripId);
+    this.listofAvailableTrips.next(updatedList);
+  }
 }
