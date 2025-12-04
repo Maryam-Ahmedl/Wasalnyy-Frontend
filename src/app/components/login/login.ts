@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { GoogleLoginDto } from '../../models/GoogleLoginDto';
 import { environment } from '../../../enviroments/enviroment';
+import { FacebookLoginDto } from '../../models/FacebookLoginDto';
+import { FacebookService } from '../../auth/facebook-service';
 
 declare const google: any;
 @Component({
@@ -15,22 +17,27 @@ declare const google: any;
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css'],
 })
 export class LoginComponent implements OnInit, AfterViewInit {
-  role: string ="";
+  role: string = '';
   error: string = '';
   loginData: LoginDto = {
     email: '',
-    password: ''
+    password: '',
   };
 
-  constructor(private authService: AuthService,private route:
-    ActivatedRoute,private router: Router, private ngZone: NgZone) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private ngZone: NgZone,
+    private facebookService: FacebookService
+  ) {}
   ngOnInit() {
     this.role = this.route.snapshot.paramMap.get('role')!;
   }
-ngAfterViewInit() {
+  ngAfterViewInit() {
     this.initializeGoogleSignIn();
   }
 
@@ -40,7 +47,7 @@ ngAfterViewInit() {
         client_id: environment.googleClientId,
         callback: this.handleGoogleSignIn.bind(this),
         auto_select: false,
-        cancel_on_tap_outside: true
+        cancel_on_tap_outside: true,
       });
 
       google.accounts.id.renderButton(
@@ -49,7 +56,7 @@ ngAfterViewInit() {
           theme: 'outline',
           size: 'large',
           width: 250,
-          text: 'signin_with'
+          text: 'signin_with',
         }
       );
     }
@@ -58,7 +65,7 @@ ngAfterViewInit() {
   handleGoogleSignIn(response: any) {
     this.ngZone.run(() => {
       const googleLoginDto: GoogleLoginDto = {
-        idToken: response.credential
+        idToken: response.credential,
       };
 
       this.authService.googleLogin(googleLoginDto).subscribe({
@@ -75,38 +82,69 @@ ngAfterViewInit() {
         error: (err) => {
           this.error = err.error?.message || err.error || 'Google login failed';
           console.error('Google login error:', err);
-        }
+        },
       });
     });
   }
+  async loginWithFacebook() {
+    try {
+      this.error = '';
+
+      const accessToken = await this.facebookService.loginWithFacebook();
+
+      const facebookLoginDto: FacebookLoginDto = {
+        accessToken: accessToken,
+      };
+
+      this.authService.facebookLogin(facebookLoginDto).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.authService.saveToken(res.token!);
+            this.authService.saveRole('Rider'); // Facebook login creates Rider
+            this.router.navigate(['']);
+          } else {
+            this.error = res.message || 'Facebook login failed';
+          }
+        },
+        error: (err) => {
+          this.error =
+            err.error?.message || err.error || 'Facebook login failed';
+          console.error('Facebook login error:', err);
+        },
+      });
+    } catch (error) {
+      this.error =
+        typeof error === 'string' ? error : 'Facebook login was cancelled';
+      console.error('Facebook login error:', error);
+    }
+  }
   login() {
-    this.authService.login(this.loginData,this.role).subscribe({
+    this.authService.login(this.loginData, this.role).subscribe({
       next: (res) => {
-        this.error='';
+        this.error = '';
         this.authService.saveToken(res.token);
         this.authService.saveRole(this.role);
 
         this.router.navigate([``]);
-        },
+      },
       error: (err) => {
         this.error = err.error;
         console.error(err.error);
-      }
+      },
     });
   }
   goToForgotPassword() {
-  this.router.navigate(['/forgot-password']);
-}
-  rerouteToRegister(){
-    console.log(this.role)
-    if(this.role=="Driver"){
-      this.router.navigate(['/register-driver']);
-    }else if(this.role=="Rider"){
-      this.router.navigate(['/register-rider']);
+    this.router.navigate(['/forgot-password']);
   }
-}
-rerouteToFaceLogin(){
+  rerouteToRegister() {
+    console.log(this.role);
+    if (this.role == 'Driver') {
+      this.router.navigate(['/register-driver']);
+    } else if (this.role == 'Rider') {
+      this.router.navigate(['/register-rider']);
+    }
+  }
+  rerouteToFaceLogin() {
     this.router.navigate(['/face-scan/login']);
-}
-
+  }
 }

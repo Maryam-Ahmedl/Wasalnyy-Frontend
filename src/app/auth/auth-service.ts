@@ -8,6 +8,8 @@ import { RegisterRiderDto } from '../models/register-rider';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleLoginDto } from '../models/GoogleLoginDto';
+import { FacebookLoginDto } from '../models/FacebookLoginDto';
+import { AuthResult } from '../models/AuthResult';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -30,6 +32,9 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/google-login`, dto);
   }
 
+  facebookLogin(dto: FacebookLoginDto): Observable<AuthResult> {
+      return this.http.post<AuthResult>(`${this.baseUrl}/facebook-login`, dto);
+    }
   registerDriver(dto: RegisterDriverDto) {
     return this.http.post(`${this.baseUrl}/register/driver`, dto);
   }
@@ -69,5 +74,10 @@ export class AuthService {
     } catch {
       return true;
     }
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    return token !== null && !this.CheckTokenExpired(token);
   }
 }

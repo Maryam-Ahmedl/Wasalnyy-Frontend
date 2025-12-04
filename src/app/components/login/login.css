@@ -68,3 +68,67 @@ button:hover {
   padding: 0 10px;
   color: #888;
 }
+.facebook-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 280px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.facebook-login-btn:hover:not(:disabled) {
+  background-color: #166fe5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(24, 119, 242, 0.3);
+}
+
+.facebook-login-btn:active:not(:disabled) {
+  background-color: #0f5bc7;
+  transform: translateY(0);
+}
+
+.facebook-login-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.facebook-login-btn svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .facebook-login-btn,
+  #google-signin-button {
+    width: 100%;
+  }
+}
+.social-login-section {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.social-login-section h3 {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
