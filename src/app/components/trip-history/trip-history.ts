@@ -80,6 +80,8 @@ onFilterChange(event:any){
 submitComplaint(tripId:string){
   this.router.navigate(['submit-complaint',tripId])
 }
-
+goToComplaints(){
+  this.router.navigate(['view-complaints']);
+}
 
 }

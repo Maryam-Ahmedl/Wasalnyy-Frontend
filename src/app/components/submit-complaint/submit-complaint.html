@@ -6,7 +6,7 @@
         <p class="alert alert-danger w-100">{{errorMessage}}</p>
     }
     @else if(successState){
-                <p class="alert alert-success w-75 mx-auto">{{sucessMessage}}</p>
+                <p class="alert alert-success w-75 mx-auto">complaint:{{this.complaintId}}  submitted successfully. redirecting to homepage in {{this.timerCounter}} seconds</p>
             }
     <textarea name="" id="" placeholder="Describe the issue" [(ngModel)]="complaintBody.Description" class="form-control w-100" rows="5"></textarea>
     

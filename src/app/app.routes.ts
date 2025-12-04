@@ -18,6 +18,7 @@ import { Wallet } from './components/wallet/wallet';
 import { TripHistory } from './components/trip-history/trip-history';
 import { Profile } from './components/profile/profile';
 import { SubmitComplaint } from './components/submit-complaint/submit-complaint';
+import { ComplaintHistory } from './components/complaint-history/complaint-history';
 
 export const routes: Routes = [
   { path: '', component: DashboardRedirectComponent },
@@ -34,6 +35,7 @@ export const routes: Routes = [
   { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
 
   {path:'submit-complaint/:tripId',component:SubmitComplaint,canActivate:[AuthGuard]},
+  {path:'view-complaints',component:ComplaintHistory,canActivate:[AuthGuard]},
   { path: 'reset-password', component: ResetPassword ,canActivate:[AuthGuard]},
   { path: 'forgot-password', component: ForgotPassword,canActivate:[AuthGuard] },
   

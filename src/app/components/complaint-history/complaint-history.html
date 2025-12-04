@@ -1,1 +1,26 @@
-<p>complaint-history works!</p>
+<app-header-bar></app-header-bar>
+    <h1 class="m-5">Previous Complaints</h1>
+
+ <div class="table-responsive">
+<table class="table table-striped table-hover table-bordered text-center">
+  <thead class="table-light">
+
+  <tr>
+    <th scope="col">Complaint id</th>
+    <th scope="col">Creation date</th>
+    <th scope="col">complaint body</th>
+     <th scope="col">complaint status</th>
+  </tr>
+    </thead>
+    <tbody>
+   @for(complaint of complaintList;track complaint.id){
+    <tr >
+        <td scope="row">{{complaint.id}}</td>
+        <td>{{complaint.createdAt|date}}</td>
+        <td>{{complaint.description}}</td>
+        <td>{{ getStatusLabel(complaint) }}</td>
+    </tr>
+   }
+   </tbody>
+</table>
+</div>

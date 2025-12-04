@@ -7,6 +7,7 @@ import { ComplaintCategory } from '../../enums/ComplaintCategory';
 import { UserType } from '../../enums/userType';
 import { AuthService } from '../../auth/auth-service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -25,9 +26,12 @@ export class SubmitComplaint implements OnInit {
   errorState:boolean=false;
   errorMessage:string='';
   successState:boolean=false;
-  sucessMessage:string=''
+  timerCounter=5;
+  complaintId='';
 
-    constructor(private route:ActivatedRoute,private complaintService:ComplaintService,private authService:AuthService){}
+    constructor(private route:ActivatedRoute,private complaintService:ComplaintService,private authService:AuthService,
+      private router:Router
+    ){}
      
       categories = Object.entries(ComplaintCategory)
         .filter(([key, value]) => typeof value === 'number')
@@ -51,9 +55,19 @@ export class SubmitComplaint implements OnInit {
         this.errorMessage="Description field Required";
       }
       this.complaintService.submitComplaint(this.complaintBody).subscribe({next:(res:any)=>{
-        console.log("sucess",res);
+        console.log("complaint submitted");
+        this.errorState=false;
         this.successState=true;
-        this.sucessMessage=`complaintId ${res.complaintId}. ${res.message}. redirecting to homepage.`
+        this.complaintId=res.complaintId
+        const myInterval=setInterval(()=>{
+          if(this.timerCounter>1){
+            this.timerCounter--;
+          }
+          else{
+            this.router.navigate(['/dashboard']);
+            clearInterval(myInterval);
+          }
+        },1000);
 },error:err=>{
   console.error(err);
   this.errorState=true;

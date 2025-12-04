@@ -7,7 +7,7 @@ import {
   Input,
   SimpleChanges,
   OnChanges  ,
-  ViewChild,        // ✅ ADD THIS
+  ViewChild,      
   ElementRef 
 } from '@angular/core';
 
@@ -38,6 +38,9 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
   secondPointMarker?: L.Marker|null;
   routeLayer?: L.Polyline | null;
 
+ zoneLayers: L.LayerGroup = L.layerGroup();
+
+
    carIcon = L.icon({
   iconUrl: 'car.png',
   iconSize: [40, 40], 
@@ -60,8 +63,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
 
   ngAfterViewInit() {
     this.initMap();
+    this.loadZones();
+    
     if(!this.firstPoint&&!this.secondPoint) this.clearMap();
 
+ 
   if (this.firstPoint) this.renderFirstPoint();
   if (this.secondPoint) this.renderSecondPoint();
   this.tryDrawRoute();
@@ -176,18 +182,71 @@ private clearRoute(){
       this.routeLayer = null;
     }
 }
-  private clearMap() {
-    if (this.routeLayer) {
-      this.map.removeLayer(this.routeLayer);
-      this.routeLayer = null;
-    }
-    if(this.firstPointMarker) {
-      this.map.removeLayer(this.firstPointMarker);
-      this.firstPointMarker=null;
-    }
-    if(this.secondPointMarker) {
-      this.map.removeLayer(this.secondPointMarker);
-      this.secondPointMarker=null;
-    }
+private clearMap() {
+  if (this.routeLayer) {
+    this.map.removeLayer(this.routeLayer);
+    this.routeLayer = null;
   }
+  
+  if (this.firstPointMarker) {
+    this.map.removeLayer(this.firstPointMarker);
+    this.firstPointMarker = null;
+  }
+
+  if (this.secondPointMarker) {
+    this.map.removeLayer(this.secondPointMarker);
+    this.secondPointMarker = null;
+  }
+}
+
+private loadZones() {
+  this.http.get('/load-zones.csv', { responseType: 'text' })
+    .subscribe(csv => {
+
+      const lines = csv.split('\n').filter(l => l.trim().length > 0);
+
+      for (let line of lines) {
+
+        // Match: ID , "JSON" , numbers…
+        const match = line.match(/^([^,]+),"(.*)",/);
+
+        if (!match) {
+          console.warn("Skipping malformed line:", line);
+          continue;
+        }
+
+        const zoneId = match[1];
+        const jsonStringRaw = match[2];
+
+        // Replace doubled quotes "" → "
+        const jsonString = jsonStringRaw.replace(/""/g, '"');
+
+        let coords;
+        try {
+          coords = JSON.parse(jsonString);
+        } catch (e) {
+          console.error("JSON parse failed:", jsonString);
+          continue;
+        }
+
+        const latlngs = coords.map((pt: any) => [pt.Lat, pt.Lng] as [number, number]);
+
+        const polygon = L.polygon(latlngs, {
+          color: 'black',
+          weight: 2,
+          dashArray: '6 6',
+          fill: false
+        });
+
+        polygon.addTo(this.zoneLayers);
+      }
+
+      this.zoneLayers.addTo(this.map);
+    });
+}
+
+
+
+
+
 }
