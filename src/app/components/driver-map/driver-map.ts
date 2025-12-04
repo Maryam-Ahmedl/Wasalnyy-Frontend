@@ -192,16 +192,15 @@ redirectToHomepge(){
 }
 acknowledgeError(){
 
- if(this.messageState){
     this.messageState=false;
+     this.available=true;
+    this.errorState=false;
+    this.errorMessage=null;
+
     if(this.activeTrip.tripStatus==="Cancelled"){
       this.tripInfoService.clearTrip();
-    }
     
   }
-    this.available=true;
-  this.errorState=false;
-  this.errorMessage=null;
  
 }
 ngOnDestroy(): void {

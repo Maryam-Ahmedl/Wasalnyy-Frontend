@@ -86,7 +86,7 @@ export class SignalrServiceTs {
           this.tripInfoService.updateListOfAvailableTrips(trip);
           setTimeout(()=>{
             this.tripInfoService.removeTripFromListOfAvailableTrips(trip.id);
-          },2000)
+          },10000)
         });
           
 
