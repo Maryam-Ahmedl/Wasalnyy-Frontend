@@ -2,6 +2,12 @@
   <h2>Rider Registration</h2>
 
   <form (ngSubmit)="registerRider()" #registerForm="ngForm">
+    @if(successState){
+      <p class="alert alert-success">{{successMessage}}</p>
+    }
+    @if(errorState){
+        <p class="alert alert-danger">{{errorMessage}}</p>
+    }
     <input [(ngModel)]="rider.fullName" name="fullName" placeholder="Full Name" required />
     <input [(ngModel)]="rider.email" name="email" type="email" placeholder="Email" required />
     <input [(ngModel)]="rider.phoneNumber" name="phoneNumber" placeholder="Phone Number" required />

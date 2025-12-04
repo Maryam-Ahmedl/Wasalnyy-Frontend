@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../auth/auth-service';
 import { environment } from '../../enviroments/enviroment';
 
@@ -12,24 +11,27 @@ export class AccountDataService {
   private ApiUrl=environment.apiUrl;
   private token:string='';
   private role:string=''
-  private headers:HttpHeaders|null=null;
-    constructor(private httpClient:HttpClient,private authService:AuthService){
-        this.token= this.authService.getToken()!;
-        this.role=this.authService.getRole()!;
-       this.headers = new HttpHeaders({
-    'Authorization': `Bearer ${this.token}`,
-    'Content-Type': 'application/json' 
-          });
-
-          }
+    constructor(private httpClient:HttpClient,private authService:AuthService){}
   
   getUserData(){
-   const url=`${this.ApiUrl}/${this.role}/Profile`;
-   return this.httpClient.get(url,{headers:this.headers!});
+       const token= this.authService.getToken()!;
+      const role=this.authService.getRole()!;
+     const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json' 
+          });
+   const url=`${this.ApiUrl}/${role}/Profile`;
+   return this.httpClient.get(url,{headers});
   }
   getDriverData(driverId:string){
     const url=`${this.ApiUrl}/Rider/DriverData`;
-    return this.httpClient.post(url, `"${driverId}"`,{headers:this.headers!});
+           const token= this.authService.getToken()!;
+      const role=this.authService.getRole()!;
+     const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json' 
+          });
+    return this.httpClient.post(url, `"${driverId}"`,{headers});
   }
   
   }

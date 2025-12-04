@@ -137,7 +137,14 @@ private renderFirstPoint() {
 
   private tryDrawRoute() {
     if (this.firstPoint && this.secondPoint) {
-      this.drawRoute();
+      try{
+
+        this.drawRoute();
+      }
+      catch(error){
+        console.error("error from draw route",error);
+      }
+      
     } else {
       this.clearRoute();
     }
@@ -146,7 +153,7 @@ private renderFirstPoint() {
 
   private drawRoute() {
     if (!this.firstPoint || !this.secondPoint) return;
-
+    
     const url = `https://router.project-osrm.org/route/v1/driving/${this.firstPoint.Lng},${this.firstPoint.Lat};${this.secondPoint.Lng},${this.secondPoint.Lat}?overview=full&geometries=geojson`;
 
     this.http.get<any>(url).subscribe({

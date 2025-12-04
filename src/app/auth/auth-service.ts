@@ -56,7 +56,6 @@ export class AuthService {
     try{
 
       const jwtDecoded=jwtDecode(token);
-  
       if(!jwtDecoded.exp) return true;
   
       const expiry = jwtDecoded.exp * 1000;  

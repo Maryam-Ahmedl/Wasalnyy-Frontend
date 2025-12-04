@@ -19,11 +19,9 @@ export class TripHistoryService {
       'Authorization': `Bearer ${this.token}`,
        'Content-Type': 'application/json'
     })
-    console.log(requestBody);
     const params=new HttpParams().set('orderBy',requestBody.orderBy)
     .set('descending',requestBody.descending).set('pageNumber',requestBody.pageNumber.toString()).set('pageSize',requestBody.pageSize);
-    console.log("Sending pageNumber =", requestBody.pageNumber);
-    console.log(params.toString()); 
+
 
      return this.httpClient.get(`${this.apiUrl}/${this.role}/TripsHistory`,{headers,params});
 

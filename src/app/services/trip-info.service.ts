@@ -70,6 +70,7 @@ updateTrip(tripData: any) {
      const updatedList = [...currentList, trip]; 
    this.listofAvailableTrips.next(updatedList);
   }
+  
   clearListOfAvailableTrips() {
     this.listofAvailableTrips.next( []);
   }

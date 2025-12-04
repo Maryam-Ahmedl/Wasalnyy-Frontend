@@ -24,20 +24,25 @@ export class SignalrServiceTs {
       this.hubConnection = new signalR.HubConnectionBuilder()
         .withUrl(this.hubUrl, {
           accessTokenFactory: () => this.authService.getToken()!})
-        .withAutomaticReconnect()
         .build();
 
+//        .withAutomaticReconnect()
           this.hubConnection.on("pendingTrip", (trip) => {
+            console.log("pending",trip);
             this.tripInfoService.updateTrip(trip);
             this.tripInfoService.setInTrip(true);
             if(trip.tripStatus==="Accepted"){
             
               const driverId=trip.driverId;
-            this.accountDataService.getDriverData(driverId).subscribe({next:res=>{
+              if(this.userRole==="Rider"){
+                        this.accountDataService.getDriverData(driverId).subscribe({next:res=>{
               this.tripInfoService.updateDriver(res)
             }
           ,error:err=>{console.error(err)}
           })
+
+              }
+    
             }
             
           });
@@ -74,14 +79,16 @@ export class SignalrServiceTs {
             this.tripInfoService.updateDriver(driver)}
           
           );
-          if(this.userRole==="Rider"){
           this. hubConnection.on('yourDriverLocationUpdated', coords=>this.tripInfoService.updateDriverCoords(coords));
-          }
-          else if(this.userRole==="Driver"){
+          
          this.hubConnection.on("availableTripsInZone", (trip) =>{
+          
           this.tripInfoService.updateListOfAvailableTrips(trip);
+          setTimeout(()=>{
+            this.tripInfoService.removeTripFromListOfAvailableTrips(trip.id);
+          },2000)
         });
-          }
+          
 
 
       this.hubConnection

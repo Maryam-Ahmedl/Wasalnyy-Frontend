@@ -67,18 +67,20 @@ export class RegisterDriverComponent {
 
   registerDriver() {
    
-    this.authService.registerDriver(this.driver).subscribe({next:res=>{
+    this.authService.registerDriver(this.driver).subscribe({next:(res:any)=>{
       this.ErrorMessageDisp=false;
       this.SuccessMessageDisp=true;
       this.messageContents="Registration successful!"
+      console.log(res);
      setTimeout(()=>{
-      this.router.navigate(['/login',"Driver"]);
+      this.router.navigate(['/face-scan/register',res.driverId]);
        },500);
           },
     error:err=>{
       this.SuccessMessageDisp=false;
       this.messageContents=err.error.message;
       this.ErrorMessageDisp=true;
+      window.scroll(0,0);
     }
 
     });
