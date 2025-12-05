@@ -83,9 +83,16 @@ export class RegisterRider {
         this.loading=false;
         console.error(err);
         this.errorState = true;
-        this.errorMessage = err.error;
+        this.errorMessage = this.extractErrorMessage(err, "falied to register, try again");
         window.scroll(0, 0);
       }
     });
+  }
+  private extractErrorMessage(err: any, defaultMessage: string): string {
+    if (err?.error?.message) return err.error.message;
+    if (typeof err?.error === 'string') return err.error;
+    if (err?.statusText && err.statusText !== 'Unknown Error') return err.statusText;
+    if (err?.message) return err.message;
+    return defaultMessage;
   }
 }

@@ -8,7 +8,7 @@ import { PasswordService } from '../../auth/password-service';
   selector: 'app-reset-password',
   imports: [FormsModule,CommonModule],
   templateUrl: './reset-password.html',
-  styles: ``,
+  styleUrls: ['./reset-password.css'],
 })
 export class ResetPassword {
 email = '';
@@ -16,7 +16,7 @@ email = '';
   newPassword = '';
   message = '';
   error = '';
-
+  loading : boolean = false;
   constructor(
     private route: ActivatedRoute,
     private auth_path: PasswordService,
@@ -34,17 +34,26 @@ email = '';
       token: this.token,
       newPassword: this.newPassword
     };
-
+    this.loading=true;
     this.auth_path.resetPassword(dto).subscribe({
       next: () => {
+        this.loading=false;
         this.error = '';
         this.message = 'Password reset successfully.';
         setTimeout(() => this.router.navigate(['/login',"Rider"]), 1500);
       },
       error: (err) => {
+        this.loading =false;
         this.message = '';
-        this.error = err.error.errors?.join(', ') ?? 'An error occurred.';
+        this.error = this.extractErrorMessage(err, 'Failed to reset Password');
       }
     });
+  }
+  private extractErrorMessage(err: any, defaultMessage: string): string {
+    if (err?.error?.message) return err.error.message;
+    if (typeof err?.error === 'string') return err.error;
+    if (err?.statusText && err.statusText !== 'Unknown Error') return err.statusText;
+    if (err?.message) return err.message;
+    return defaultMessage;
   }
 }

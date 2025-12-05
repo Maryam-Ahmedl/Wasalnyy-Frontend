@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     email: '',
     password: '',
   };
+  loading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -119,8 +120,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
   login() {
+    this.loading = true;
     this.authService.login(this.loginData, this.role).subscribe({
       next: (res) => {
+        this.loading = false;
         this.error = '';
         this.authService.saveToken(res.token);
         this.authService.saveRole(this.role);
@@ -128,10 +131,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.router.navigate([``]);
       },
       error: (err) => {
-        this.error = err.error;
+        this.loading = false;
+        this.error = this.extractErrorMessage(err, 'Login failed. Please check your credentials.');
         console.error(err.error);
       },
     });
+  }
+  private extractErrorMessage(err: any, defaultMessage: string): string {
+    if (err?.error?.message) {
+      return err.error.message;
+    }
+    if (typeof err?.error === 'string') {
+      return err.error;
+    }
+    if (err?.message) {
+      return err.message;
+    }
+    return defaultMessage;
   }
   goToForgotPassword() {
     this.router.navigate(['/forgot-password']);

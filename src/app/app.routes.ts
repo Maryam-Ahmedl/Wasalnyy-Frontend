@@ -44,12 +44,12 @@ export const routes: Routes = [
 
   {path:'submit-complaint/:tripId',component:SubmitComplaint,canActivate:[AuthGuard]},
   {path:'view-complaints',component:ComplaintHistory,canActivate:[AuthGuard]},
-  { path: 'reset-password', component: ResetPassword ,canActivate:[AuthGuard]},
-  { path: 'forgot-password', component: ForgotPassword,canActivate:[AuthGuard] },
-  
+  { path: 'reset-password', component: ResetPassword},
+  { path: 'forgot-password', component: ForgotPassword},
+
   { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
   { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
-  
+
   { path:'wallet',component:Wallet, canActivate: [AuthGuard]},
   { path: 'payment-failed', component: PaymentFailed ,canActivate:[AuthGuard],data:{role:'Rider'}},
   { path: 'payment-successful', component: PaymentSuccessful,canActivate:[AuthGuard],data:{role:'Rider'} },
@@ -62,5 +62,5 @@ export const routes: Routes = [
   {path: 'rideraccount',component:RiderAccountComponent,canActivate:[AuthGuard],data:{role:'Rider'}},
 
 
-  { path: '**', redirectTo: '' } 
+  { path: '**', redirectTo: '' }
 ];

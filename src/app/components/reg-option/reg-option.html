@@ -1,8 +1,23 @@
-<div class="choose-container">
-  <h2>Choose User Type</h2>
-  <div class="buttons">
-    <button (click)="registerRider()" >Login as Rider</button>
-    <button (click)="registerDriver()" >Login as Driver</button>
-    <button (click)="registerAdmin()">Login as Admin</button>
+<div class="split-container">
+
+  <!-- Left Section -->
+  <div class="left-side">
+    <div class="logo-box">
+      <img src="wasalny_icon.ico" alt="Wasalnyy Logo" class="logo" />
+      <h1 class="app-title">Wasalnyy</h1>
+      <p class="tagline">Your Smart Way to Move</p>
+    </div>
   </div>
+
+  <!-- Right Section -->
+  <div class="right-side">
+    <div class="content-box">
+      <h2>Continue As</h2>
+
+      <button class="btn action-btn" (click)="registerRider()">Rider</button>
+      <button class="btn action-btn" (click)="registerDriver()">Driver</button>
+      <button class="btn action-btn" (click)="registerAdmin()">Admin</button>
+    </div>
+  </div>
+
 </div>

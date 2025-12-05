@@ -139,17 +139,17 @@ export class RegisterDriverComponent {
         this.loading = false;
         this.SuccessMessageDisp = false;
         this.ErrorMessageDisp = true;
-        if (err.error?.errors) {
-          // Get first validation error from backend
-          const firstKey = Object.keys(err.error.errors)[0];
-          this.messageContents = err.error.errors[firstKey][0];
-        } else if (err.error?.title) {
-          this.messageContents = err.error.title;
-        } else {
-          this.messageContents = 'Registration failed, try again';
-        }
+        this.messageContents = this.extractErrorMessage(err, 'Registration failed. Please try again.');
         window.scroll(0, 0);
       },
     });
   }
+  private extractErrorMessage(err: any, defaultMessage: string): string {
+    if (err?.error?.message) return err.error.message;
+    if (typeof err?.error === 'string') return err.error;
+    if (err?.statusText && err.statusText !== 'Unknown Error') return err.statusText;
+    if (err?.message) return err.message;
+    return defaultMessage;
+  }
+
 }

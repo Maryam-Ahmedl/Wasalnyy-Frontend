@@ -1,57 +1,131 @@
- .choose-container {
-  max-width: 400px;
-  margin: 80px auto;
-  padding: 30px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+/* ---------- Main Split Layout ---------- */
+.split-container {
+  display: flex;
+  height: 100vh;
   font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+/* ---------- Left Section (Logo / Branding) ---------- */
+.left-side {
+  flex: 1;
+  background: linear-gradient(135deg, #dfffe8, #b9ffd0, #a2f5c0);
+  animation: gradientMove 10s infinite alternate;
+  background-size: 200% 200%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+@keyframes gradientMove {
+  0% { background-position: left top; }
+  100% { background-position: right bottom; }
+}
+
+.logo-box {
+  animation: fadeInLeft 1s ease forwards;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  animation: logoBounce 2s infinite;
+}
+
+@keyframes logoBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.app-title {
+  font-size: 50px;
+  font-weight: 800;
+  color: #0a5f3b;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  font-size: 20px;
+  font-weight: 500;
+  color: #0e7a4c;
+  opacity: 0.85;
+}
+
+/* ---------- Right Section (Buttons) ---------- */
+.right-side {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.content-box {
+  width: 80%;
+  max-width: 350px;
+  text-align: center;
+  animation: fadeInRight 1s ease forwards;
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 h2 {
-  margin-bottom: 30px;
-  color: #333;
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0a5f3b;
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-button {
-  padding: 12px;
+/* ---------- Buttons ---------- */
+.btn {
+  width: 100%;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
+  font-size: 17px;
   font-weight: 600;
-  font-size: 16px;
+  margin-bottom: 15px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-button:first-child {
-  background-color: #1ca571;
+/* Gradient Buttons */
+.action-btn {
+  background: linear-gradient(135deg, #1ca571, #16a085);
   color: #fff;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
-button:first-child:hover {
- box-shadow: 2px 2px 6px grey;
+.action-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  transform: skewX(-25deg);
+  transition: all 0.5s;
 }
 
-button:nth-child(2){
-  background-color: rgb(238, 238, 94);
-  color:black;
-}
-button:nth-child(2):hover{
-   box-shadow: 2px 2px 6px grey;
+.action-btn:hover::after {
+  left: 125%;
 }
 
-button:last-child {
-  background-color: #4897E0;
-  color: #fff;
-}
-
-button:last-child:hover {
-box-shadow: 2px 2px 6px grey;
+.action-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }

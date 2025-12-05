@@ -1,41 +1,84 @@
 <div class="login-container">
-  <h2>Login</h2>
-  @if (this.error!=='') {
+  <h2>{{ role }} Login</h2>
 
-  <p class="alert alert-danger">{{ error }}</p>
-  }
-  @if(role!=="Admin"){
+  <!-- ERROR -->
+  <p *ngIf="error" class="alert alert-danger fade-in">{{ error }}</p>
 
-    <div class="social-login-section">
-      <div id="google-signin-button"></div>
-      <button
-        class="facebook-login-btn"
-        (click)="loginWithFacebook()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-        </svg>
-        Continue with Facebook
-      </button>
-  
-      <div class="divider">
-        <span>OR</span>
-      </div>
-    </div>
-  }
+  <!-- SOCIAL LOGIN — Rider ONLY -->
+  <div *ngIf="role === 'Rider'" class="social-login-section fade-in">
+    <div id="google-signin-button" class="social-btn-wrapper"></div>
 
-  <form (ngSubmit)="login()" #loginForm="ngForm">
-    <input [(ngModel)]="loginData.email" name="email" type="email" placeholder="Email" autocomplete="username"
-      required />
-    <input [(ngModel)]="loginData.password" name="password" type="password" placeholder="Password"
-      autocomplete="current-password" required class="​ng-touched ng-dirty ng-valid" />
-    <button type="submit" [disabled]="!loginForm.valid" class="m-2">Login</button>
+    <button class="facebook-login-btn" (click)="loginWithFacebook()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="#fff"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12
+         12c0 5.99 4.388 10.954 10.125
+         11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007
+         1.792-4.669 4.533-4.669 1.312 0 2.686.235
+         2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956
+         1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612
+         23.027 24 18.062 24 12.073z"
+        />
+      </svg>
+      Continue with Facebook
+    </button>
+
+    <div class="divider"><span>OR</span></div>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <form (ngSubmit)="login()" #loginForm="ngForm" class="fade-in">
+    <input
+      [(ngModel)]="loginData.email"
+      name="email"
+      type="email"
+      placeholder="Email"
+      autocomplete="username"
+      required
+    />
+
+    <input
+      [(ngModel)]="loginData.password"
+      name="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+      required
+    />
+
+    <button type="submit" class="btn-main pulse" [disabled]="!loginForm.valid || loading">
+      <span
+        *ngIf="loading"
+        class="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Login
+    </button>
   </form>
-  @if(this.role!=="Admin"){
-   <button (click)="goToForgotPassword()">Forgot Password?</button>
 
-   <button (click)="rerouteToRegister()">go to registration page</button>
- }
-  @if (this.role=="Driver") {
-  <button (click)="rerouteToFaceLogin()">face login</button>
-  }
+  <!-- RESET PASSWORD (Rider + Driver) -->
+  <button *ngIf="role !== 'Admin'" class="btn-secondary fade-in" (click)="goToForgotPassword()">
+    Forgot Password?
+  </button>
+
+  <!-- REGISTER (Rider ONLY) -->
+  <button
+    *ngIf="role === 'Rider' || role === 'Driver'"
+    class="btn-secondary fade-in"
+    (click)="rerouteToRegister()"
+  >
+    Create New Account
+  </button>
+
+  <!-- FACE LOGIN (Driver ONLY) -->
+  <button *ngIf="role === 'Driver'" class="btn-secondary fade-in" (click)="rerouteToFaceLogin()">
+    Login With Face ID
+  </button>
 </div>
